@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include <stdexcept>
 #include <thread>
 #include <mutex>
@@ -354,6 +355,15 @@ namespace WonderRabbitProject { namespace GLFW
     this_type& operator=(const this_type&) = delete;
     this_type& operator=(this_type&&)      = delete;
 
+    ~glfw()
+    {
+      #ifdef WRP_GLOG_ENABLED
+        LOG(INFO) << "--> WRP::GLFW::glfw::dtor";
+        LOG(INFO) << "to quick_exit(0)";
+      #endif
+      quick_exit(0);
+    }
+
     static this_type& instance()
     {
       #ifdef WRP_GLOG_ENABLED
@@ -366,14 +376,14 @@ namespace WonderRabbitProject { namespace GLFW
           LOG(INFO) << "lock_guard with mutex address is " << std::hex << &m;
         #endif
         if ( ! i ) {
-          i = new this_type();
+          i.reset( new this_type() );
           #ifdef WRP_GLOG_ENABLED
-            LOG(INFO) << "new instance; address of instance is " << std::hex << i;
+            LOG(INFO) << "new instance; address of instance is " << std::hex << i.get();
           #endif
         }
       }
       #ifdef WRP_GLOG_ENABLED
-        LOG(INFO) << "returning instance address is " << std::hex << i;
+        LOG(INFO) << "returning instance address is " << std::hex << i.get();
         LOG(INFO) << "<-- WRP::GLFW::glfw::instance";
       #endif
       return *i;
@@ -442,7 +452,7 @@ namespace WonderRabbitProject { namespace GLFW
 
     
   private:
-    static this_type* i;
+    static std::unique_ptr<this_type> i;
     static std::mutex m;
     
     glfw()
@@ -457,15 +467,6 @@ namespace WonderRabbitProject { namespace GLFW
       #endif
     }
     
-    ~glfw()
-    {
-      #ifdef WRP_GLOG_ENABLED
-        LOG(INFO) << "--> WRP::GLFW::glfw::dtor";
-        LOG(INFO) << "to quick_exit(0)";
-      #endif
-      quick_exit(0);
-    }
-
     void finalize() const
     {
         #ifdef WRP_GLOG_ENABLED
@@ -577,7 +578,7 @@ namespace WonderRabbitProject { namespace GLFW
   std::mutex glfw<TCONF, TMAIN>::m;
   
   template<class TCONF, class TMAIN>
-  glfw<TCONF, TMAIN>* glfw<TCONF, TMAIN>::i;
+  std::unique_ptr<glfw<TCONF, TMAIN>> glfw<TCONF, TMAIN>::i;
   
 } }
 
