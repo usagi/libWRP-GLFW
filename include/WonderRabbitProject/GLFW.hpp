@@ -357,7 +357,7 @@ namespace WonderRabbitProject { namespace GLFW
     static this_type& instance()
     {
       #ifdef WRP_GLOG_ENABLED
-        LOG(INFO) << "--> WRP::GLFW::main::instance";
+        LOG(INFO) << "--> WRP::GLFW::glfw::instance";
       #endif
       if ( ! i )
       {
@@ -374,7 +374,7 @@ namespace WonderRabbitProject { namespace GLFW
       }
       #ifdef WRP_GLOG_ENABLED
         LOG(INFO) << "returning instance address is " << std::hex << i;
-        LOG(INFO) << "<-- WRP::GLFW::main::instance";
+        LOG(INFO) << "<-- WRP::GLFW::glfw::instance";
       #endif
       return *i;
     }
@@ -385,11 +385,11 @@ namespace WonderRabbitProject { namespace GLFW
     void invoke() const
     {
       #ifdef WRP_GLOG_ENABLED
-        LOG(INFO) << "--> WRP::GLFW::main::invoke";
+        LOG(INFO) << "--> WRP::GLFW::glfw::invoke";
       #endif
       main_loop();
       #ifdef WRP_GLOG_ENABLED
-        LOG(INFO) << "<-- WRP::GLFW::main::invoke";
+        LOG(INFO) << "<-- WRP::GLFW::glfw::invoke";
       #endif
     }
 
@@ -449,18 +449,18 @@ namespace WonderRabbitProject { namespace GLFW
       : main_([](){})
     {
       #ifdef WRP_GLOG_ENABLED
-        LOG(INFO) << "--> WRP::GLFW::main::ctor";
+        LOG(INFO) << "--> WRP::GLFW::glfw::ctor";
       #endif
       initialize();
       #ifdef WRP_GLOG_ENABLED
-        LOG(INFO) << "<-- WRP::GLFW::main::ctor";
+        LOG(INFO) << "<-- WRP::GLFW::glfw::ctor";
       #endif
     }
     
     ~glfw()
     {
       #ifdef WRP_GLOG_ENABLED
-        LOG(INFO) << "--> WRP::GLFW::main::dtor";
+        LOG(INFO) << "--> WRP::GLFW::glfw::dtor";
         LOG(INFO) << "to quick_exit(0)";
       #endif
       quick_exit(0);
@@ -469,19 +469,19 @@ namespace WonderRabbitProject { namespace GLFW
     void finalize() const
     {
         #ifdef WRP_GLOG_ENABLED
-          LOG(INFO) << "--> WRP::GLFW::main::finalize";
+          LOG(INFO) << "--> WRP::GLFW::glfw::finalize";
         #endif
         C::glfwTerminate();
         #ifdef WRP_GLOG_ENABLED
           LOG(INFO) << "glfwTerminate done";
-          LOG(INFO) << "<-- WRP::GLFW::main::finalize";
+          LOG(INFO) << "<-- WRP::GLFW::glfw::finalize";
         #endif
     }
     
     void initialize() const
     {
       #ifdef WRP_GLOG_ENABLED
-        LOG(INFO) << "--> WRP::GLFW::main::initialize";
+        LOG(INFO) << "--> WRP::GLFW::glfw::initialize";
       #endif
       auto r = C::glfwInit();
       #ifdef WRP_GLOG_ENABLED
@@ -496,22 +496,22 @@ namespace WonderRabbitProject { namespace GLFW
       at_quick_exit([]()
       {
         #ifdef WRP_GLOG_ENABLED
-          LOG(INFO) << "--> at_quick_exit(WRP::GLFW::main::initialize::[](){})";
+          LOG(INFO) << "--> at_quick_exit(WRP::GLFW::glfw::initialize::[](){})";
         #endif
         this_type::i->finalize();
         #ifdef WRP_GLOG_ENABLED
-          LOG(INFO) << "<-- at_quick_exit(WRP::GLFW::main::initialize::[](){})";
+          LOG(INFO) << "<-- at_quick_exit(WRP::GLFW::glfw::initialize::[](){})";
         #endif
       });
       #ifdef WRP_GLOG_ENABLED
-        LOG(INFO) << "<-- WRP::GLFW::main::initialize";
+        LOG(INFO) << "<-- WRP::GLFW::glfw::initialize";
       #endif
     }
     
     void window() const
     {
       #ifdef WRP_GLOG_ENABLED
-        LOG(INFO) << "--> WRP::GLFW::main::window";
+        LOG(INFO) << "--> WRP::GLFW::glfw::window";
         LOG(INFO) << "width       : " << configurator_type::default_width;
         LOG(INFO) << "height      : " << configurator_type::default_height;
         LOG(INFO) << "red_bits    : " << configurator_type::default_red_bits;
@@ -545,14 +545,14 @@ namespace WonderRabbitProject { namespace GLFW
         );
       }
       #ifdef WRP_GLOG_ENABLED
-        LOG(INFO) << "<-- WRP::GLFW::main::window";
+        LOG(INFO) << "<-- WRP::GLFW::glfw::window";
       #endif
     }
     
     void main_loop() const
     {
       #ifdef WRP_GLOG_ENABLED
-        LOG(INFO) << "--> WRP::GLFW::main::main_loop";
+        LOG(INFO) << "--> WRP::GLFW::glfw::main_loop";
       #endif
       std::lock_guard<decltype(m)> g(m);
       #ifdef WRP_GLOG_ENABLED
@@ -565,7 +565,7 @@ namespace WonderRabbitProject { namespace GLFW
         swap();
       }
       #ifdef WRP_GLOG_ENABLED
-        LOG(INFO) << "<-- WRP::GLFW::main::main_loop";
+        LOG(INFO) << "<-- WRP::GLFW::glfw::main_loop";
       #endif
     }
     

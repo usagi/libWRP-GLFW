@@ -12,12 +12,12 @@ The library is in the "./include" directory.
 
 ### Usage and Sample
 
-The sample is in the top directory.
+The sample is in the './sample' directory.
 
 #### build with Ninja and g++
 
-    ninja
-    ./00_glfw-test
+    $ ninja
+    $ ./00_glfw-test
 
 ## Requirement
 
@@ -28,6 +28,10 @@ The sample is in the top directory.
 
 * [google-glog](https://code.google.com/p/google-glog/)
 * [Ninja](http://martine.github.com/ninja/)
+
+## Document
+
+n/a. To see the sample and library source code if you need :)
 
 ## License
 
