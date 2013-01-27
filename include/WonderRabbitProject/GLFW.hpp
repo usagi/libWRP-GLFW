@@ -29,6 +29,7 @@ namespace WonderRabbitProject { namespace GLFW
   #include "./GLFW/OPEN_WINDOW_HINT_TARGET.hpp"
 
   #include "./GLFW/BOOL.hpp"
+  #include "./GLFW/CLEAR_BUFFER_BIT.hpp"
 
   template
   < unsigned DEFAULT_WIDTH      = 0, unsigned DEFAULT_HEIGHT       = 0
@@ -38,6 +39,7 @@ namespace WonderRabbitProject { namespace GLFW
   , unsigned DEFAULT_MODE       = unsigned(WINDOW_MODE::WINDOW)
   , unsigned DEFAULT_EXIT_KEY   = unsigned(KEY::ESC)
   , unsigned DEFAULT_SWAP_INTERVAL = 1
+  , int DEFAULT_CLEAR_BUFFER_BIT = int(CLEAR_BUFFER_BIT::ALL)
   >
   struct configurator
   {
@@ -52,6 +54,8 @@ namespace WonderRabbitProject { namespace GLFW
       default_exit_key = KEY(DEFAULT_EXIT_KEY);
     static constexpr unsigned
       default_swap_interval = DEFAULT_SWAP_INTERVAL;
+    static constexpr CLEAR_BUFFER_BIT
+      default_clear_buffer_bit = CLEAR_BUFFER_BIT(DEFAULT_CLEAR_BUFFER_BIT);
     unsigned
       width      = default_width     , height       = default_height      ,
       red_bits   = default_red_bits  , green_bits   = default_green_bits  ,
@@ -61,6 +65,7 @@ namespace WonderRabbitProject { namespace GLFW
     WINDOW_MODE mode = WINDOW_MODE(default_mode);
     KEY exit_key = KEY(default_exit_key);
     int swap_interval = default_swap_interval;
+    CLEAR_BUFFER_BIT clear_buffer_bit = CLEAR_BUFFER_BIT(default_clear_buffer_bit);
   };
 
   template
@@ -149,14 +154,39 @@ namespace WonderRabbitProject { namespace GLFW
       return r;
     }
 
-    inline void clear(const int color_buffer_bit = GL_COLOR_BUFFER_BIT) const
+    inline void auto_clear(bool f = true)
+    {
+      #ifdef WRP_GLOG_ENABLED
+        LOG(INFO) << "WRP::GLFW::auto_clear : " << std::boolalpha << f;
+      #endif
+      clear_ = f
+        ? [this]{ this->clear(); }
+        : []{}
+        ;
+    }
+
+    inline void auto_swap(bool f = true)
+    {
+      #ifdef WRP_GLOG_ENABLED
+        LOG(INFO) << "WRP::GLFW::auto_swap : " << std::boolalpha << f;
+      #endif
+      swap_ = f
+        ? [this]{ this->swap(); }
+        : []{}
+        ;
+    }
+
+    inline void clear(
+      const CLEAR_BUFFER_BIT color_buffer_bit
+        = configurator_type::default_clear_buffer_bit
+    ) const
     {
       //#ifdef WRP_GLOG_ENABLED
       //  LOG_EVERY_N(INFO, 60)
       //    << "/60 WRP::GLFW::clear; with color_buffer_bit is "
       //    << std::hex << color_buffer_bit;
       //#endif
-      C::glClear(color_buffer_bit);
+      C::glClear(int(color_buffer_bit));
     }
     
     inline void swap() const
@@ -250,7 +280,7 @@ namespace WonderRabbitProject { namespace GLFW
         #endif
     }
     
-    void initialize() const
+    void initialize()
     {
       #ifdef WRP_GLOG_ENABLED
         LOG(INFO) << "--> WRP::GLFW::glfw::initialize";
@@ -264,6 +294,8 @@ namespace WonderRabbitProject { namespace GLFW
           std::string("glfeInit failed; code = ")
           + std::to_string(r)
         );
+      auto_clear();
+      auto_swap();
       window();
       at_quick_exit([]()
       {
@@ -341,9 +373,9 @@ namespace WonderRabbitProject { namespace GLFW
       #endif
       while( ! key(conf_.exit_key) && C::glfwGetWindowParam(int(WINDOW_PARAM::OPENED)) )
       {
-        clear();
+        clear_();
         main_();
-        swap();
+        swap_();
       }
       #ifdef WRP_GLOG_ENABLED
         LOG(INFO) << "<-- WRP::GLFW::glfw::main_loop";
@@ -352,6 +384,10 @@ namespace WonderRabbitProject { namespace GLFW
     
     main_type         main_;
     configurator_type conf_;
+    
+    std::function<void()>
+      clear_,
+      swap_;
   };
   
   template<class TCONF, class TMAIN>
