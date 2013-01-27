@@ -11,12 +11,22 @@
   #define WRP_GLOG_ENABLED
 #endif
 
-namespace WonderRabbitProject { namespace GLFW
-{
+#define WRP_GLEW
+namespace WonderRabbitProject { namespace GLEW {
+  namespace C
+  {
+    #include <GL/glew.h>
+  }
+} }
+
+#define WRP_GLFW
+namespace WonderRabbitProject { namespace GLFW {
   
   namespace C
   {
+    #define GLFW_NO_GLU
     #include <GL/glfw.h>
+    #undef  GLFW_NO_GLU
   }
 
   // [TOOL] regex enum scope helper
@@ -186,6 +196,9 @@ namespace WonderRabbitProject { namespace GLFW
       //    << "/60 WRP::GLFW::clear; with color_buffer_bit is "
       //    << std::hex << color_buffer_bit;
       //#endif
+      #ifdef WRP_GLEW
+      WonderRabbitProject::GLEW::
+      #endif
       C::glClear(int(color_buffer_bit));
     }
     
