@@ -11,14 +11,6 @@
   #define WRP_GLOG_ENABLED
 #endif
 
-#define WRP_GLEW
-namespace WonderRabbitProject { namespace GLEW {
-  namespace C
-  {
-    #include <GL/glew.h>
-  }
-} }
-
 #define WRP_GLFW
 namespace WonderRabbitProject { namespace GLFW {
   
@@ -104,7 +96,8 @@ namespace WonderRabbitProject { namespace GLFW {
       quick_exit(0);
     }
 
-    static this_type& instance()
+    template<class ... THINTS>
+    static this_type& instance(THINTS ... hints_)
     {
       #ifdef WRP_GLOG_ENABLED
         LOG(INFO) << "--> WRP::GLFW::glfw::instance";
@@ -120,6 +113,7 @@ namespace WonderRabbitProject { namespace GLFW {
           #ifdef WRP_GLOG_ENABLED
             LOG(INFO) << "new instance; address of instance is " << std::hex << i.get();
           #endif
+          i->hints(hints_ ...);
         }
       }
       #ifdef WRP_GLOG_ENABLED
