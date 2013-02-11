@@ -380,9 +380,9 @@ namespace WonderRabbitProject { namespace GLFW {
       #endif
       while( ! key(conf_.exit_key) && C::glfwGetWindowParam(int(WINDOW_PARAM::OPENED)) )
       {
-        clear_();
         main_();
         swap_();
+        clear_();
       }
       #ifdef WRP_GLOG_ENABLED
         LOG(INFO) << "<-- WRP::GLFW::glfw::main_loop";
