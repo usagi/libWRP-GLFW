@@ -1,7 +1,7 @@
 build_command    = g++
 include_path     = -Iinclude
 compile_options  = $include_path -std=c++11 -O3 -Wall -Werror
-link_options     = -lglog -lglfw -lpthread
+link_options     = -lglog -lglfw -lGL -lpthread
 int_directory    = sample
 out_directory    = bin
 
